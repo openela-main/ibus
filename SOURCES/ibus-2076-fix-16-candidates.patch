@@ -1,0 +1,26 @@
+From 6aab10f2e5a8e10dac9b007eff19b26990461790 Mon Sep 17 00:00:00 2001
+From: fujiwarat <takao.fujiwara1@gmail.com>
+Date: Thu, 14 Feb 2019 17:37:39 +0900
+Subject: [PATCH] ui/gtk3: Fix assert with 16 candidates
+
+BUG=https://github.com/ibus/ibus/issues/2076
+---
+ ui/gtk3/candidatearea.vala | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ui/gtk3/candidatearea.vala b/ui/gtk3/candidatearea.vala
+index f590cf3a..781ecd1e 100644
+--- a/ui/gtk3/candidatearea.vala
++++ b/ui/gtk3/candidatearea.vala
+@@ -109,7 +109,7 @@ class CandidateArea : Gtk.Box {
+         m_focus_candidate = focus_candidate;
+         m_show_cursor = show_cursor;
+ 
+-        assert(candidates.length < 16);
++        assert(candidates.length <= 16);
+         for (int i = 0 ; i < 16 ; i++) {
+             Gtk.Label label = m_candidates[i];
+             bool visible = false;
+-- 
+2.21.0
+

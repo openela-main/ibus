@@ -1,0 +1,60 @@
+From 1cb5032e85d85f496e349236d1b74f17fb8db966 Mon Sep 17 00:00:00 2001
+From: fujiwarat <takao.fujiwara1@gmail.com>
+Date: Tue, 23 Apr 2019 15:40:45 +0900
+Subject: [PATCH] configure: Move ibus-setup from configure.ac to Makefile.am
+
+@localedir@ can be extracted to ${datarootdir}/locale and
+it needs datarootdir=/usr/share in case configure.ac is used
+and deleting the datarootdir line caused a regression.
+All variables can be extracted in Makefile.am with sed.
+---
+ configure.ac      |  1 -
+ setup/Makefile.am | 13 +++++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 9518e808..7503f3e8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -724,7 +724,6 @@ ibus/interface/Makefile
+ ui/Makefile
+ ui/gtk3/Makefile
+ setup/Makefile
+-setup/ibus-setup
+ bindings/Makefile
+ bindings/pygobject/Makefile
+ bindings/vala/Makefile
+diff --git a/setup/Makefile.am b/setup/Makefile.am
+index cb4dd8d1..34c8f136 100644
+--- a/setup/Makefile.am
++++ b/setup/Makefile.am
+@@ -3,8 +3,8 @@
+ # ibus - The Input Bus
+ #
+ # Copyright (c) 2007-2014 Peng Huang <shawn.p.huang@gmail.com>
+-# Copyright (c) 2015-2017 Takao Fujiwara <takao.fujiwara1@gmail.com>
+-# Copyright (c) 2007-2017 Red Hat, Inc.
++# Copyright (c) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
++# Copyright (c) 2007-2019 Red Hat, Inc.
+ #
+ # This library is free software; you can redistribute it and/or
+ # modify it under the terms of the GNU Lesser General Public
+@@ -40,6 +40,15 @@ ibussetup_DATA = \
+ bin_SCRIPTS = ibus-setup
+ ibussetupdir = $(pkgdatadir)/setup
+ 
++ibus-setup: ibus-setup.in
++	$(AM_V_GEN) sed -e "s|\@datarootdir\@|$(datarootdir)|g" \
++	                -e "s|\@localedir\@|$(localedir)|g" \
++	                -e "s|\@libexecdir\@|$(libexecdir)|g" \
++	                -e "s|\@prefix\@|$(prefix)|g" \
++	                -e "s|\@PYTHON\@|$(PYTHON)|g" \
++	$< > $@.tmp && \
++	mv $@.tmp $@
++
+ desktop_in_files = ibus-setup.desktop.in
+ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+ desktopdir = $(datadir)/applications
+-- 
+2.21.0
+
