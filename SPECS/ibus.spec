@@ -38,7 +38,7 @@
 
 Name:           ibus
 Version:        1.5.25
-Release:        2%{?dist}
+Release:        5%{?dist}
 Summary:        Intelligent Input Bus for Linux OS
 License:        LGPLv2+
 URL:            https://github.com/ibus/%name/wiki
@@ -47,11 +47,13 @@ Source1:        %{name}-xinput
 Source2:        %{name}.conf.5
 # Patch0:         %%{name}-HEAD.patch
 Patch0:         %{name}-HEAD.patch
+# RHEL-1616
+Patch1:         %{name}-1616-gtk4-sync.patch
 # Under testing #1349148 #1385349 #1350291 #1406699 #1432252 #1601577
-Patch1:         %{name}-1385349-segv-bus-proxy.patch
+Patch2:         %{name}-1385349-segv-bus-proxy.patch
 %if 0%{?fedora:0}%{?rhel:1}
 # Use mutter window manager in RHEL CI
-Patch2:         %{name}-xx-desktop-testing-mutter.patch
+Patch3:         %{name}-xx-desktop-testing-mutter.patch
 %endif
 
 BuildRequires:  gettext-devel
@@ -264,6 +266,7 @@ desktop testing runner internally.
 %package  tests
 Summary:        Tests for the %{name} package
 Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       %{name}-libs%{?_isa}   = %{version}-%{release}
 
 %description tests
 The %{name}-tests package contains tests that can be used to verify
@@ -510,6 +513,15 @@ dconf update || :
 %{_datadir}/installed-tests/ibus
 
 %changelog
+* Wed Nov 15 2023 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.25-5
+- Resolves: RHEL-1616 Fix RESOURCE_LEAK in OpenScanHub
+
+* Mon Oct 30 2023 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.25-4
+- Resolves: RHEL-1616 Make ibus-tests to depend on ibus-libs
+
+* Tue Oct 24 2023 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.25-3
+- Resolves: RHEL-1616 Space, back-spc, enter key not working on gtk4
+
 * Mon Oct 04 2021 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.25-2
 - Fix wrong cursor location in gtk3. Related: rhbz#2008359
 
