@@ -38,7 +38,7 @@
 
 Name:           ibus
 Version:        1.5.25
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Intelligent Input Bus for Linux OS
 License:        LGPLv2+
 URL:            https://github.com/ibus/%name/wiki
@@ -513,6 +513,9 @@ dconf update || :
 %{_datadir}/installed-tests/ibus
 
 %changelog
+* Tue Jul 30 2024 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.25-6
+- Resolves: RHEL-39398 ship ibus-gtk4 in RHEL 9 CRB
+
 * Wed Nov 15 2023 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.25-5
 - Resolves: RHEL-1616 Fix RESOURCE_LEAK in OpenScanHub
 
