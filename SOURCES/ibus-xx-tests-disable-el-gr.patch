@@ -1,0 +1,8 @@
+--- ibus-1.5.19/src/tests/ibus-compose.env.orig	2025-04-11 20:19:32.894033452 +0900
++++ ibus-1.5.19/src/tests/ibus-compose.env	2025-04-11 20:20:36.995690581 +0900
+@@ -1,4 +1,4 @@
+-LANG=el_GR.UTF-8
++#LANG=el_GR.UTF-8
+ LANG=fi_FI.UTF-8
+ LANG=pt_BR.UTF-8
+ LANG=en_US.UTF-8 COMPOSE_FILE=ibus-compose.emoji

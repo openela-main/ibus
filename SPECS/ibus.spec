@@ -31,7 +31,7 @@
 
 Name:           ibus
 Version:        1.5.19
-Release:        14%{?dist}
+Release:        15%{?dist}
 Summary:        Intelligent Input Bus for Linux OS
 License:        LGPLv2+
 Group:          System Environment/Libraries
@@ -59,6 +59,11 @@ Patch6:         %{name}-1682157-ci.patch
 Patch7:         %{name}-1713606-hangul-with-mouse.patch
 # RHEL 8.5 Bug 1897548 - Enable to lookup Unicode names
 Patch8:         %{name}-1897548-emoji-unicode.patch
+# RHEL 8.10 Backport CI from RHEL 9
+Patch9:         %{name}-xx-tests-desktop-el9.patch
+# RHEL 8.10 Disable el-GR compose test since the latest includes multiple
+# outputs and IBus requires to backport lots of patches to support it.
+Patch10:        %{name}-xx-tests-disable-el-gr.patch
 
 # RHEL 8.0 Under testing #1349148 #1385349 #1350291 #1406699 #1432252 #1601577
 Patch100:       %{name}-1385349-segv-bus-proxy.patch
@@ -501,8 +506,11 @@ dconf update || :
 %{_datadir}/installed-tests/ibus
 
 %changelog
-* Mon Oct 18 2021 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.19-14
-- Resolves: #2014064 - Fix regression of Emoji typing in Wayland
+* Sat Apr 19 2025 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.19-15
+- Resolves: RHEL-87876 Backport desktop-testing from RHEL 9
+
+* Thu Sep 30 2021 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.19-14
+- Resolves: #2008074 - Fix regression of Emoji typing in Wayland
 
 * Tue Jul 06 2021 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.19-13
 - Resolves: #1897548 - Rebuild IBus emoji with unicode-emoji-13.0-4 and cldr-emoji-annotation-39-2
