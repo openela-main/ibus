@@ -32,10 +32,11 @@
 
 %global ibus_xinit_condition %ibus_panel_condition
 # FIXME: How to write a condition with multiple lines
-%global ibus_panel_condition (%pcd1 or %pcd2 or %pcd3)
+%global ibus_panel_condition (%pcd1 or %pcd2 or %pcd3 or %pcd4)
 %global pcd1 budgie-desktop or cinnamon or deepin-desktop or i3
 %global pcd2 lxqt-session or lxsession or mate-panel or phosh
 %global pcd3 plasma-workspace or sugar or xfce4-session
+%global pcd4 cosmic-panel or hyprland or sway
 
 %if %with_pkg_config
 %if %{with gtk2}
@@ -49,7 +50,7 @@
 %else
 %{!?gtk4_binary_version: %global gtk4_binary_version ?.?.?}
 %endif
-%global glib_ver %([ -a %{_libdir}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
+%global glib_ver %([ -a /usr/%{_lib}/pkgconfig/glib-2.0.pc ] && pkg-config --modversion glib-2.0 | cut -d. -f 1,2 || echo -n "999")
 %else
 %{!?gtk2_binary_version: %global gtk2_binary_version ?.?.?}
 %{!?gtk3_binary_version: %global gtk3_binary_version ?.?.?}
@@ -60,9 +61,9 @@
 %global dbus_python_version 0.83.0
 
 Name:           ibus
-Version:        1.5.31
+Version:        1.5.32
 # https://github.com/fedora-infra/rpmautospec/issues/101
-Release:        3%{?dist}
+Release:        1%{?dist}
 Summary:        Intelligent Input Bus for Linux OS
 License:        LGPL-2.1-or-later
 URL:            https://github.com/ibus/%name/wiki
@@ -110,6 +111,7 @@ BuildRequires:  cldr-emoji-annotation
 BuildRequires:  unicode-emoji
 BuildRequires:  unicode-ucd
 BuildRequires:  systemd
+BuildRequires:  wayland-protocols-devel
 
 Requires:       %{name}-libs%{?_isa}   = %{version}-%{release}
 %if %{with gtk2}
@@ -334,8 +336,6 @@ fi
 # cp client/gtk2/ibusimcontext.c client/gtk3/ibusimcontext.c || :
 # cp client/gtk2/ibusim.c client/gtk3/ibusim.c || :
 # cp client/gtk2/ibusimcontext.c client/gtk4/ibusimcontext.c || :
-cp client/gtk2/ibusimcontext.c client/gtk3/ibusimcontext.c || :
-cp client/gtk2/ibusimcontext.c client/gtk4/ibusimcontext.c || :
 
 
 # prep test
@@ -357,8 +357,8 @@ fi
 #autoreconf -f -i -v
 #make -C ui/gtk3 maintainer-clean-generic
 #make -C tools maintainer-clean-generic
+#make -C portal maintainer-clean-generic
 #make -C src/compose maintainer-clean-generic
-autoreconf -f -i -v
 %configure \
     --disable-static \
 %if %{with gtk2}
@@ -384,7 +384,10 @@ autoreconf -f -i -v
     --enable-introspection \
     --enable-install-tests \
     %{nil}
+# for 1385349-segv-bus-proxy.patch
 make -C ui/gtk3 maintainer-clean-generic
+# for g_variant_builder_init_static in ibus-portal-dbus.c
+make -C portal maintainer-clean-generic
 
 %make_build
 
@@ -637,6 +640,9 @@ dconf update || :
 %{_datadir}/installed-tests/ibus
 
 %changelog
+* Thu Apr 10 2025 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.32-1
+- Resolves: RHEL-83888 Bump to 1.5.32
+
 * Thu Nov 14 2024 Takao Fujiwara <tfujiwar@redhat.com> - 1.5.31-3
 - Rebuild to export GSK_RENDERER=cairo in CentOS but not RHEL for Vulkan
 

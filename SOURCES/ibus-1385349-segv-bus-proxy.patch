@@ -533,17 +533,6 @@ diff --git a/ui/gtk3/switcher.vala b/ui/gtk3/switcher.vala
 index 26bded99..21ede7be 100644
 --- a/ui/gtk3/switcher.vala
 +++ b/ui/gtk3/switcher.vala
-@@ -176,8 +176,8 @@ class Switcher : Gtk.Window {
-                    IBus.EngineDesc[] engines,
-                    int               index,
-                    string            input_context_path) {
--        assert (m_loop == null);
--        assert (index < engines.length);
-+        assert(m_loop == null);
-+        assert(index < engines.length);
- 
-         if (m_is_running)
-             return index;
 @@ -236,16 +236,18 @@ class Switcher : Gtk.Window {
                             null,
                             event,
